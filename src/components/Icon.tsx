@@ -110,6 +110,15 @@ const shapes: Record<string, ReactNode> = {
       <path d="M3 9V5a2 2 0 0 1 2-2h13m3 9h-6a2 2 0 0 0 0 4h6" />
     </>
   ),
+  qr: (
+    <>
+      <rect x="3" y="3" width="7" height="7" rx="1" />
+      <rect x="14" y="3" width="7" height="7" rx="1" />
+      <rect x="3" y="14" width="7" height="7" rx="1" />
+      <path d="M14 14h3v3h-3zm6 0v.01M14 20.5h.01M17.5 20.5H21v-3.5" />
+    </>
+  ),
+  download: <path d="M12 3v12m-5-5 5 5 5-5M4 19h16" />,
   lock: (
     <>
       <rect x="5" y="10" width="14" height="11" rx="2" />

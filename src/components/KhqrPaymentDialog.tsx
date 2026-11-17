@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { QRCodeSVG } from "qrcode.react";
+import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
 import type { Order } from "../data/mockData";
 import { apiPaymentStatus, apiSimulatePayment } from "../data/api";
 import { useAccountApi } from "../data/accountApi";
@@ -36,6 +36,7 @@ export function KhqrPaymentDialog({ order, onClose, closing = false }: Props) {
   const { notify } = useFeedback();
   const { token, reload } = useAccountApi();
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const qrImageRef = useRef<HTMLCanvasElement>(null);
   const [current, setCurrent] = useState(order);
   const [offline, setOffline] = useState(false);
   const [simulating, setSimulating] = useState(false);
@@ -100,6 +101,16 @@ export function KhqrPaymentDialog({ order, onClose, closing = false }: Props) {
     }
   };
 
+  // On a phone the customer cannot scan their own screen; banking apps can scan a saved photo instead.
+  const saveQr = () => {
+    const canvas = qrImageRef.current;
+    if (!canvas) return;
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png");
+    link.download = `KHQR-${current.id}.png`;
+    link.click();
+  };
+
   const orderAgain = () => {
     const cart = shop.cart.map((line) => ({ ...line }));
     for (const item of current.items) {
@@ -123,10 +134,10 @@ export function KhqrPaymentDialog({ order, onClose, closing = false }: Props) {
     >
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-[var(--gold-mid)]">
-            Pay with KHQR · <span className="font-mono-data">{current.id}</span>
+          <p className="text-sm text-[var(--muted-foreground)]">
+            Order <span className="font-mono-data">{current.id}</span>
           </p>
-          <h2 id="khqr-title" className="mt-1 font-display text-xl font-semibold">
+          <h2 id="khqr-title" className="mt-0.5 font-display text-xl font-semibold">
             {waiting
               ? "Scan to pay"
               : status === "PAID"
@@ -150,49 +161,84 @@ export function KhqrPaymentDialog({ order, onClose, closing = false }: Props) {
 
       {waiting ? (
         <>
-          <div className="mt-5 flex flex-col items-center gap-3 rounded-xl bg-[var(--secondary)] p-4">
-            {/* Banking apps need dark modules on a light ground, whatever the page theme. */}
-            <div className="rounded-xl bg-white p-3">
-              {payment?.qr ? (
-                <QRCodeSVG value={payment.qr} size={208} level="M" marginSize={1} title={`KHQR for ${current.id}`} />
-              ) : (
-                <div className="grid h-[208px] w-[208px] place-items-center text-sm text-neutral-500">QR unavailable</div>
-              )}
+          <div className="mt-5 rounded-xl border border-[var(--border)] bg-[var(--secondary)]">
+            <div className="flex items-end justify-between gap-4 px-5 pt-4 pb-3">
+              <div>
+                <p className="text-sm font-semibold">KhmerShop</p>
+                <p className="text-xs text-[var(--muted-foreground)]">KHQR payment</p>
+              </div>
+              <div className="text-right">
+                <p className="font-display text-3xl font-semibold leading-none text-[var(--gold-mid)]">{usd(amount, currency)}</p>
+                {shop.currency !== "USD" && (
+                  <p className="mt-1 text-xs text-[var(--muted-foreground)]">about {shop.money(amount)}</p>
+                )}
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-semibold text-[var(--gold-mid)]">{usd(amount, currency)}</div>
-              {shop.currency !== "USD" && (
-                <div className="text-xs text-[var(--muted-foreground)]">≈ {shop.money(amount)} · charged in {currency}</div>
+            <div className="border-t border-dashed border-[var(--border)]" />
+            <div className="flex flex-col items-center gap-3 px-5 py-5">
+              {/* Banking apps need dark modules on a light ground, whatever the page theme. */}
+              <div className="rounded-xl bg-white p-3">
+                {payment?.qr ? (
+                  <QRCodeSVG value={payment.qr} size={208} level="M" marginSize={1} title={`KHQR for ${current.id}`} />
+                ) : (
+                  <div className="grid h-[208px] w-[208px] place-items-center text-sm text-neutral-500">QR unavailable</div>
+                )}
+              </div>
+              {payment?.qr && (
+                <QRCodeCanvas ref={qrImageRef} value={payment.qr} size={720} level="M" marginSize={4} className="hidden" aria-hidden="true" />
+              )}
+              {left !== null && (
+                <p
+                  className={`rounded-full px-3 py-1 text-sm ${
+                    left < 60_000 ? "bg-red-400/10 font-semibold text-red-400" : "bg-[var(--card)] text-[var(--muted-foreground)]"
+                  }`}
+                >
+                  Expires in <span className="font-mono-data">{clockText(left)}</span>
+                </p>
               )}
             </div>
           </div>
 
-          <div className="mt-4 flex items-center justify-between gap-3 text-sm" aria-live="polite">
-            <span className="flex items-center gap-2 text-[var(--muted-foreground)]">
-              <span className="h-2 w-2 rounded-full bg-[var(--gold-mid)] animate-pulse" aria-hidden="true" />
-              {offline ? "Can't reach the server, retrying…" : "Waiting for payment…"}
-            </span>
-            {left !== null && (
-              <span className={left < 60_000 ? "font-semibold text-red-400" : "text-[var(--muted-foreground)]"}>
-                Expires in <span className="font-mono-data">{clockText(left)}</span>
-              </span>
-            )}
-          </div>
-          <p className="mt-3 text-xs text-[var(--muted-foreground)]">
-            Open any Cambodian banking app (ABA, ACLEDA, Wing…) and scan the code. This window updates by itself once
-            the payment arrives. Unpaid orders are cancelled when the time runs out.
+          <p className="mt-4 flex items-center gap-2 text-sm text-[var(--muted-foreground)]" aria-live="polite">
+            <span className="h-2 w-2 shrink-0 rounded-full bg-[var(--gold-mid)] animate-pulse" aria-hidden="true" />
+            {offline ? "Can't reach the server. Retrying…" : "Waiting for your payment. This window updates by itself."}
           </p>
 
-          <div className="mt-5 flex flex-wrap gap-3">
-            <button type="button" onClick={() => onClose("orders")} className="btn btn-secondary flex-1">
+          <ol className="mt-4 space-y-2 text-sm">
+            {[
+              "Open ABA, ACLEDA, Wing or any Bakong app and choose Scan.",
+              "Scan this code, or pick the saved QR image from your photos.",
+              "Check the amount and confirm the payment.",
+            ].map((step, index) => (
+              <li key={step} className="flex gap-3">
+                <span
+                  aria-hidden="true"
+                  className="grid h-5 w-5 shrink-0 place-items-center rounded-full border border-[var(--border)] bg-[var(--secondary)] text-xs text-[var(--muted-foreground)]"
+                >
+                  {index + 1}
+                </span>
+                <span>{step}</span>
+              </li>
+            ))}
+          </ol>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <button type="button" disabled={!payment?.qr} onClick={saveQr} className="btn btn-primary">
+              <Icon name="download" className="h-4 w-4" />
+              Save QR image
+            </button>
+            <button type="button" onClick={() => onClose("orders")} className="btn btn-secondary">
               Pay later
             </button>
             {import.meta.env.DEV && (
-              <button type="button" disabled={simulating} onClick={simulate} className="btn btn-secondary flex-1">
+              <button type="button" disabled={simulating} onClick={simulate} className="btn btn-secondary sm:col-span-2">
                 {simulating ? "Paying…" : "Simulate payment (dev)"}
               </button>
             )}
           </div>
+          <p className="mt-3 text-xs text-[var(--muted-foreground)]">
+            Unpaid orders are cancelled when the time runs out. You can pay later from My Orders until then.
+          </p>
         </>
       ) : status === "PAID" ? (
         <>
