@@ -449,10 +449,11 @@ export default function App() {
     setPendingProductId(productId);
   };
 
-  const confirmAddToCart = (qty: number) => {
-    const product = shop.products.find((p) => p.id === pendingProductId);
+  /** Adds a chosen quantity straight to the cart, then opens it. Returns false when it could not. */
+  const addQuantityToCart = (productId: string, qty: number) => {
+    const product = shop.products.find((p) => p.id === productId);
     const inCart =
-      shop.cart.find((item) => item.productId === pendingProductId)?.qty ?? 0;
+      shop.cart.find((item) => item.productId === productId)?.qty ?? 0;
     if (
       !product ||
       !Number.isInteger(qty) ||
@@ -460,12 +461,18 @@ export default function App() {
       product.stock < inCart + qty
     ) {
       notify("The selected quantity is no longer available.", "error");
-      return;
+      return false;
     }
     shop.addToCart(product.id, qty);
-    setPendingProductId(null);
     notify(`${qty} × ${product.name} added to your cart.`, "success");
     navigate({ role: "customer", page: "cart" });
+    return true;
+  };
+
+  const confirmAddToCart = (qty: number) => {
+    if (pendingProductId && addQuantityToCart(pendingProductId, qty)) {
+      setPendingProductId(null);
+    }
   };
 
   const cartCount = shop.cart.reduce((s, c) => s + c.qty, 0);
@@ -639,9 +646,10 @@ export default function App() {
           key={productId}
           productId={productId}
           onAddToCart={addToCart}
+          onAddQuantity={addQuantityToCart}
           onViewProduct={viewProduct}
           onBack={() => navigateCustomer("products")}
-          guest={!session}
+          guest={session?.role !== "customer"}
         />
       )}
       {customerPage === "cart" && (

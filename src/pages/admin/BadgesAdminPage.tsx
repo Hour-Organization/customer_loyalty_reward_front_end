@@ -96,7 +96,7 @@ export function AdminBadgesPage({
             setError("")
             setEditing(blank())
           }}
-          className="rounded-lg bg-[var(--gold-mid)] px-4 py-2 text-sm font-semibold text-[var(--background)]"
+          className="btn btn-primary"
         >
           + Add Badge
         </button>
@@ -213,7 +213,7 @@ export function AdminBadgesPage({
             <div className="flex gap-2">
               <button
                 disabled={saving}
-                className="rounded-lg bg-[var(--gold-mid)] px-4 py-2 text-[var(--background)] disabled:opacity-60"
+                className="btn btn-primary"
               >
                 {saving ? "Saving…" : "Save Badge"}
               </button>
@@ -223,7 +223,7 @@ export function AdminBadgesPage({
                   setEditing(null)
                   setError("")
                 }}
-                className="rounded-lg bg-[var(--secondary)] px-4 py-2"
+                className="btn btn-secondary"
               >
                 Cancel
               </button>

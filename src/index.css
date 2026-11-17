@@ -436,11 +436,13 @@ button:disabled {
   overflow-y: auto;
   margin: 0;
   padding: 0;
-  border: 1px solid rgba(232, 166, 52, 0.3);
+  border: 1px solid var(--border);
   border-radius: 1rem;
   color: var(--foreground);
   background: var(--card);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    0 1px 0 var(--tint) inset,
+    0 32px 80px -24px rgba(0, 0, 0, 0.65);
   animation: dialog-enter 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 @media (min-width: 640px) {
@@ -450,9 +452,349 @@ button:disabled {
   }
 }
 .admin-modal::backdrop {
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(5px);
+  background: rgba(5, 6, 9, 0.72);
+  backdrop-filter: blur(6px);
 }
+
+/* Admin form modals: one look for every page's form, whatever classes its fields carry.
+   These rules sit outside Tailwind's layers on purpose, so they win over the per-page utilities. */
+.admin-modal-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem 1.1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+}
+.admin-modal-close {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  border-radius: 0.5rem;
+  color: var(--muted-foreground);
+  transition: background-color 0.15s, color 0.15s;
+}
+.admin-modal-close:hover {
+  color: var(--foreground);
+  background: var(--secondary);
+}
+.admin-modal-body {
+  padding: 1.5rem;
+}
+@media (max-width: 639px) {
+  .admin-modal-header {
+    padding: 0.9rem 1rem 0.9rem 1.25rem;
+  }
+  .admin-modal-body {
+    padding: 1.25rem;
+  }
+}
+
+/* Field labels: a quiet caption with a little air above the control. */
+.admin-modal label:has(> :is(input:not([type="checkbox"], [type="radio"]), select, textarea)) {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  color: var(--secondary-foreground);
+}
+.admin-modal label > :is(input:not([type="checkbox"], [type="radio"]), select, textarea) {
+  margin-top: 0.375rem;
+}
+
+/* Text fields, numbers, dates and selects. */
+.admin-modal :is(input:not([type="checkbox"], [type="radio"], [type="file"], [type="range"], [type="color"]), select, textarea) {
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background-color: var(--secondary);
+  color: var(--foreground);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.4;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.admin-modal :is(input, select, textarea)::placeholder {
+  color: var(--muted-foreground);
+  opacity: 0.8;
+}
+.admin-modal :is(input, select, textarea):hover:not(:disabled, :focus) {
+  border-color: color-mix(in srgb, var(--muted-foreground) 45%, transparent);
+}
+.admin-modal :is(input:not([type="checkbox"], [type="radio"]), select, textarea):focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--gold-mid) 70%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold-mid) 18%, transparent);
+}
+.admin-modal :is(input, select, textarea):disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.admin-modal textarea {
+  min-height: 5.5rem;
+  resize: vertical;
+}
+.admin-modal select:not([multiple]) {
+  appearance: none;
+  padding-right: 2.25rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%238a8478' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+  background-position: right 0.7rem center;
+  background-repeat: no-repeat;
+  background-size: 1rem;
+}
+.admin-modal :is(input[type="checkbox"], input[type="radio"]) {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--gold-mid);
+}
+
+/* The form's closing row of buttons becomes a footer that stays in view while the form scrolls. */
+.admin-modal-body form > div:last-child:has(> :is(button[type="submit"], button:not([type]))) {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  margin: 1.5rem -1.5rem -1.5rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 0 0 1rem 1rem;
+  /* Every form ends the same way: actions on the right, Cancel before the main action. */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+.admin-modal-body form > div:last-child:has(> :is(button[type="submit"], button:not([type]))) > button {
+  min-height: 2.25rem;
+  padding-inline: 0.875rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+/* Secondary actions take the app's outlined button look, whatever each page gave them. */
+.admin-modal-body form > div:last-child:has(> :is(button[type="submit"], button:not([type]))) > button[type="button"] {
+  order: -1;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--foreground);
+  font-weight: 500;
+}
+.admin-modal-body form > div:last-child:has(> :is(button[type="submit"], button:not([type]))) > button[type="button"]:hover:not(:disabled) {
+  background: var(--secondary);
+}
+.admin-modal-body form > div:last-child:has(> :is(button[type="submit"], button:not([type]))) > :is(button[type="submit"], button:not([type])) {
+  font-weight: 600;
+}
+@media (max-width: 639px) {
+  .admin-modal-body form > div:last-child:has(> :is(button[type="submit"], button:not([type]))) {
+    margin: 1.25rem -1.25rem -1.25rem;
+    padding: 0.875rem 1.25rem;
+  }
+}
+/* Buttons: one shared set for the admin pages. In the components layer, so a page can still add
+   layout utilities (w-full, shrink-0, ml-auto) next to them. */
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 2.25rem;
+    padding: 0 0.875rem;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    transition:
+      background-color 0.15s,
+      border-color 0.15s,
+      color 0.15s;
+  }
+  .btn:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  .btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+  .btn-primary {
+    background: var(--gold-mid);
+    color: var(--background);
+    font-weight: 600;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--gold-mid) 86%, var(--foreground));
+  }
+  .btn-secondary {
+    border-color: var(--border);
+    background: transparent;
+    color: var(--foreground);
+  }
+  .btn-secondary:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--gold-mid) 35%, transparent);
+    background: var(--secondary);
+  }
+  .btn-sm {
+    height: 2rem;
+    padding: 0 0.75rem;
+    font-size: 0.8125rem;
+  }
+
+  /* Filter chips: the selected one is a gold tint, so it never competes with the page's main action. */
+  .chip {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.375rem;
+    height: 1.875rem;
+    padding: 0 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    background: var(--card);
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition:
+      background-color 0.15s,
+      border-color 0.15s,
+      color 0.15s;
+  }
+  .chip:hover {
+    color: var(--foreground);
+    border-color: color-mix(in srgb, var(--gold-mid) 30%, transparent);
+  }
+  .chip:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  .chip-active,
+  .chip-active:hover {
+    border-color: color-mix(in srgb, var(--gold-mid) 50%, transparent);
+    background: color-mix(in srgb, var(--gold-mid) 14%, transparent);
+    color: var(--gold-mid);
+  }
+}
+
+/* Search boxes and filters on admin pages: one control style everywhere, matching the 36px buttons.
+   Fields inside forms, tables and dialogs keep the form style above. */
+.admin-content :where(input:is([type="search"], [type="text"], [type="date"], [type="number"], :not([type])), select):not(form *, table *, dialog *) {
+  height: 2.25rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background-color: var(--card);
+  color: var(--foreground);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.admin-content :is(input, select):not(form *, table *, dialog *)::placeholder {
+  color: var(--muted-foreground);
+  opacity: 0.85;
+}
+.admin-content :is(input, select):not(form *, table *, dialog *, :disabled, :focus):hover {
+  border-color: color-mix(in srgb, var(--muted-foreground) 45%, transparent);
+}
+.admin-content :is(input, select):not(form *, table *, dialog *, [type="checkbox"], [type="radio"]):focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--gold-mid) 70%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold-mid) 18%, transparent);
+}
+/* Search boxes carry a magnifier, like the sidebar's "Find a page". */
+.admin-content input:is([type="search"], [placeholder^="Search" i]):not(form *, table *, dialog *) {
+  padding-left: 2.125rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%238a8478' stroke-width='1.8' stroke-linecap='round'%3E%3Ccircle cx='8.5' cy='8.5' r='5.5'/%3E%3Cpath d='m13 13 4 4'/%3E%3C/svg%3E");
+  background-position: left 0.7rem center;
+  background-repeat: no-repeat;
+  background-size: 1rem;
+}
+.admin-content input[type="search"]:not(form *, table *, dialog *)::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+/* Filter selects share the form chevron. */
+.admin-content select:not([multiple], form *, table *, dialog *) {
+  appearance: none;
+  padding-right: 2.25rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%238a8478' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+  background-position: right 0.7rem center;
+  background-repeat: no-repeat;
+  background-size: 1rem;
+}
+/* Compact size, for the rows-per-page picker beside the 32px pagination buttons. */
+.admin-content select.control-sm:not(form *, table *, dialog *) {
+  height: 2rem;
+  padding-left: 0.625rem;
+  padding-right: 1.875rem;
+  font-size: 0.8125rem;
+  background-position: right 0.5rem center;
+}
+
+/* Admin tables: one look for every list in the admin pages, whatever padding each page gave its cells.
+   Like the modal rules, these sit outside Tailwind's layers so they win over per-page utilities;
+   alignment, colour and font classes on cells are left alone. */
+.admin-content table {
+  border-collapse: separate;
+  border-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+.admin-content :is(th, td) {
+  padding: 0.75rem 1rem;
+  vertical-align: middle;
+}
+.admin-content :is(th, td):first-child {
+  padding-left: 1.25rem;
+}
+.admin-content :is(th, td):last-child {
+  padding-right: 1.25rem;
+}
+/* Header: a quiet sentence-case caption row that stays in view inside scrolling tables. */
+.admin-content thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding-block: 0.625rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--secondary);
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1rem;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+}
+.admin-content thead {
+  border: 0;
+  background: none;
+}
+/* Body rows: one hairline between rows, a soft tint under the pointer. */
+.admin-content tbody tr {
+  border: 0;
+  transition: background-color 0.12s;
+}
+.admin-content tbody tr + tr > td {
+  border-top: 1px solid var(--border);
+}
+.admin-content tbody tr:hover > td {
+  background: color-mix(in srgb, var(--secondary) 55%, transparent);
+}
+.admin-content tbody {
+  border: 0;
+}
+
 .modal-leaving {
   pointer-events: none;
   animation: dialog-leave 0.22s ease-in both;

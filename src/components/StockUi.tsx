@@ -12,10 +12,8 @@ import {
 
 export const field =
   "w-full rounded-lg border border-[var(--border)] bg-[var(--secondary)] px-3 py-2 text-sm text-[var(--foreground)] focus:border-[var(--gold-mid)] focus:outline-none disabled:opacity-50";
-export const primaryButton =
-  "rounded-lg bg-[var(--gold-mid)] px-4 py-2 text-sm font-semibold text-[var(--background)] disabled:cursor-not-allowed disabled:opacity-40";
-export const secondaryButton =
-  "rounded-lg border border-[var(--border)] px-3 py-2 text-sm hover:bg-[var(--secondary)] disabled:cursor-not-allowed disabled:opacity-40";
+export const primaryButton = "btn btn-primary";
+export const secondaryButton = "btn btn-secondary";
 export const filterControl =
   "rounded-lg border border-[var(--border)] bg-[var(--card)] px-3 py-1.5 text-sm text-[var(--foreground)] focus:outline-none";
 

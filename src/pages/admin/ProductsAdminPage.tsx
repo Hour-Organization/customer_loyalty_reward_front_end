@@ -138,7 +138,7 @@ export function AdminProductsPage({ actorId, token }: { actorId: string; token: 
         <h1 className="font-display text-2xl font-semibold">Products</h1>
         <button
           onClick={addProduct}
-          className="rounded-lg bg-[var(--gold-mid)] px-4 py-2 text-sm font-semibold text-[var(--background)]"
+          className="btn btn-primary"
         >
           + Add Product
         </button>
@@ -153,11 +153,7 @@ export function AdminProductsPage({ actorId, token }: { actorId: string; token: 
           <button
             key={c}
             onClick={() => setFilter(c)}
-            className={`shrink-0 rounded-full px-3 py-1 text-xs ${
-              filter === c
-                ? "bg-[var(--gold-mid)] text-[var(--background)]"
-                : "border border-[var(--border)] bg-[var(--card)]"
-            }`}
+            className={`chip ${filter === c ? "chip-active" : ""}`}
           >
             {c}
           </button>
@@ -295,7 +291,7 @@ export function AdminProductsPage({ actorId, token }: { actorId: string; token: 
             <div className="flex gap-2">
               <button
                 disabled={saving}
-                className="rounded-lg bg-[var(--gold-mid)] px-4 py-2 text-[var(--background)] disabled:opacity-60"
+                className="btn btn-primary"
               >
                 {saving ? "Saving…" : "Save Product"}
               </button>
@@ -305,7 +301,7 @@ export function AdminProductsPage({ actorId, token }: { actorId: string; token: 
                   setEditing(null)
                   setError("")
                 }}
-                className="rounded-lg bg-[var(--secondary)] px-4 py-2"
+                className="btn btn-secondary"
               >
                 Cancel
               </button>

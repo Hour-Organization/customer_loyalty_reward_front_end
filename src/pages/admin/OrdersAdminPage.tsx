@@ -66,11 +66,7 @@ export function AdminOrdersPage({ token, onChanged }: { token: string; onChanged
           <button
             key={s}
             onClick={() => setFilter(s)}
-            className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-              filter === s
-                ? "bg-[var(--gold-mid)] text-[var(--background)]"
-                : "bg-[var(--card)] border border-[var(--border)] text-[var(--muted-foreground)]"
-            }`}
+            className={`chip ${filter === s ? "chip-active" : ""}`}
           >
             {s}
           </button>
@@ -104,7 +100,7 @@ export function AdminOrdersPage({ token, onChanged }: { token: string; onChanged
                 {nextStatuses[o.status].length > 0 && (
                   <button
                     onClick={() => openStatusEditor(o.id, o.status)}
-                    className="rounded-lg border border-[var(--border)] bg-[var(--secondary)] px-2 py-1 text-xs text-[var(--gold-mid)]"
+                    className="btn btn-secondary btn-sm"
                   >
                     Change status
                   </button>
@@ -178,14 +174,14 @@ export function AdminOrdersPage({ token, onChanged }: { token: string; onChanged
             <div className="flex gap-2">
               <button
                 type="submit"
-                className="rounded-lg bg-[var(--gold-mid)] px-4 py-2 font-semibold text-[var(--background)]"
+                className="btn btn-primary"
               >
                 Save Status
               </button>
               <button
                 type="button"
                 onClick={() => setEditingId(null)}
-                className="rounded-lg bg-[var(--secondary)] px-4 py-2"
+                className="btn btn-secondary"
               >
                 Cancel
               </button>

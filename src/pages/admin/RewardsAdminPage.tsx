@@ -146,7 +146,7 @@ export function AdminRewardsPage({
         <h1 className="font-display text-2xl font-semibold">Rewards Catalog</h1>
         <button
           onClick={() => open(blank(tierNames[0] ?? ""))}
-          className="rounded-lg bg-[var(--gold-mid)] px-4 py-2 text-sm font-semibold text-[var(--background)]"
+          className="btn btn-primary"
         >
           + Add Reward
         </button>
@@ -275,14 +275,14 @@ export function AdminRewardsPage({
             <div className="flex gap-2">
               <button
                 disabled={saving}
-                className="rounded-lg bg-[var(--gold-mid)] px-4 py-2 text-[var(--background)] disabled:opacity-60"
+                className="btn btn-primary"
               >
                 {saving ? "Saving…" : "Save Reward"}
               </button>
               <button
                 type="button"
                 onClick={close}
-                className="rounded-lg bg-[var(--secondary)] px-4 py-2"
+                className="btn btn-secondary"
               >
                 Cancel
               </button>

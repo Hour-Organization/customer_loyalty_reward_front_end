@@ -60,7 +60,7 @@ export function AdminExchangeRatePage({ token, onChanged }: { token: string; onC
         <button
           type="button"
           onClick={openEditor}
-          className="inline-flex items-center gap-2 rounded-xl bg-[var(--gold-mid)] px-5 py-2.5 text-sm font-semibold text-[var(--background)] shadow-[0_8px_24px_rgba(232,166,52,0.16)] hover:bg-[var(--gold-light)]"
+          className="btn btn-primary"
         >
           <Icon name="refresh" className="h-4 w-4" /> Update rate
         </button>
@@ -232,13 +232,13 @@ export function AdminExchangeRatePage({ token, onChanged }: { token: string; onC
               <button
                 type="button"
                 onClick={() => setEditing(false)}
-                className="rounded-lg border border-[var(--border)] px-4 py-2.5 text-sm font-medium hover:bg-[var(--secondary)]"
+                className="btn btn-secondary"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="rounded-lg bg-[var(--gold-mid)] px-5 py-2.5 text-sm font-semibold text-[var(--background)] hover:bg-[var(--gold-light)]"
+                className="btn btn-primary"
               >
                 Save rate
               </button>

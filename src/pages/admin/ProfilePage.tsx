@@ -41,7 +41,7 @@ export function AdminProfilePage({ userId, token }: { userId: string; token: str
   return <div className="space-y-5">
     <div className="flex flex-wrap items-center justify-between gap-3">
       <div><h1 className="font-display text-2xl font-semibold">My Profile</h1><p className="mt-1 text-sm text-[var(--muted-foreground)]">Your admin account and current access.</p></div>
-      {editing ? <button type="button" onClick={() => setEditing(false)} className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-semibold">Cancel</button> : <ActionIconButton action="edit" label="Edit profile" onClick={startEditing} />}
+      {editing ? <button type="button" onClick={() => setEditing(false)} className="btn btn-secondary">Cancel</button> : <ActionIconButton action="edit" label="Edit profile" onClick={startEditing} />}
     </div>
     <section className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
       <div className="mb-6 flex items-center gap-4">
@@ -52,7 +52,7 @@ export function AdminProfilePage({ userId, token }: { userId: string; token: str
         <label className="block text-sm">Name<input required autoComplete="name" value={name} onChange={(event) => setName(event.target.value)} className={fieldClass} /></label>
         <label className="block text-sm">Email<input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} className={fieldClass} /></label>
         {error && <p role="alert" className="text-sm text-red-400">{error}</p>}
-        <button type="submit" className="rounded-lg bg-[var(--gold-mid)] px-4 py-2 font-semibold text-[var(--background)]">Save changes</button>
+        <button type="submit" className="btn btn-primary">Save changes</button>
       </form> : <div className="grid gap-3 sm:grid-cols-2">
         {[["Email", user.email], ["Role", roleLabels[user.role] ?? user.role], ["Status", user.active ? "Active" : "Disabled"]].map(([label, value]) => <div key={label} className="rounded-lg bg-[var(--secondary)] p-3 text-sm"><div className="mb-1 text-xs text-[var(--muted-foreground)]">{label}</div>{value}</div>)}
       </div>}

@@ -57,7 +57,7 @@ export function AdminActivityLogsPage() {
             <button
               key={e}
               onClick={() => setEventFilter(e)}
-              className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${eventFilter === e ? "bg-[var(--gold-mid)] text-[var(--background)]" : "bg-[var(--card)] border border-[var(--border)] text-[var(--muted-foreground)]"}`}
+              className={`chip ${eventFilter === e ? "chip-active" : ""}`}
             >
               {e.replace("_", " ")}
             </button>

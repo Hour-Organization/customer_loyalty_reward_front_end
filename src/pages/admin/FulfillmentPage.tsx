@@ -73,7 +73,7 @@ export function AdminFulfillmentPage({ actorId }: { actorId: string }) {
         <div className="flex flex-wrap gap-1" role="tablist">
           {tabs.map((t) => (
             <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} onClick={() => setTab(t.id)}
-              className={`rounded-full px-3 py-1.5 text-xs font-medium ${tab === t.id ? "bg-[var(--gold-mid)] text-[var(--background)]" : "border border-[var(--border)] bg-[var(--card)] text-[var(--muted-foreground)]"}`}>
+              className={`chip ${tab === t.id ? "chip-active" : ""}`}>
               {t.label} <span className="ml-1 font-mono-data">{t.count}</span>
             </button>
           ))}

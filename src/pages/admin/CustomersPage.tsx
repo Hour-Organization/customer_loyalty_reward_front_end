@@ -65,11 +65,7 @@ export function AdminCustomersPage({ token, onChanged }: { token: string; onChan
             <button
               key={t}
               onClick={() => setTierFilter(t)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                tierFilter === t
-                  ? "bg-[var(--gold-mid)] text-[var(--background)]"
-                  : "bg-[var(--card)] border border-[var(--border)] text-[var(--muted-foreground)]"
-              }`}
+              className={`chip ${tierFilter === t ? "chip-active" : ""}`}
             >
               {t}
             </button>
@@ -208,14 +204,14 @@ export function AdminCustomersPage({ token, onChanged }: { token: string; onChan
             <div className="flex gap-2">
               <button
                 type="submit"
-                className="rounded-lg bg-[var(--gold-mid)] px-4 py-2 font-semibold text-[var(--background)]"
+                className="btn btn-primary"
               >
                 Save Override
               </button>
               <button
                 type="button"
                 onClick={() => setEditingId(null)}
-                className="rounded-lg bg-[var(--secondary)] px-4 py-2"
+                className="btn btn-secondary"
               >
                 Cancel
               </button>

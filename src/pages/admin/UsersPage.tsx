@@ -92,7 +92,7 @@ export function AdminUsersPage({ actorId, token, onCustomersChanged }: { actorId
         <h1 className="font-display text-2xl font-semibold">User Management</h1>
         <p className="mt-1 text-sm text-[var(--muted-foreground)]">Manage staff roles and account access for staff and customers.</p>
       </div>
-      <button onClick={() => open()} className="rounded-lg bg-[var(--gold-mid)] px-4 py-2 text-sm font-semibold text-[var(--background)]">Add staff user</button>
+      <button onClick={() => open()} className="btn btn-primary">Add staff user</button>
     </div>
     <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--card)]">
       <div className="overflow-x-auto">
@@ -107,7 +107,7 @@ export function AdminUsersPage({ actorId, token, onCustomersChanged }: { actorId
           <td className="px-4 py-3"><span className={user.active ? "text-green-400" : "text-[var(--muted-foreground)]"}>{user.active ? "Active" : "Disabled"}</span></td>
           <td className="px-4 py-3 text-right"><div className="flex justify-end gap-2">
             <ActionIconButton action="edit" label={`Edit ${user.name}`} onClick={() => open(user)} />
-            <button onClick={() => void toggle(user)} disabled={user.id === actorId} className="rounded-lg border border-[var(--border)] px-3 py-1.5 text-xs disabled:opacity-40">{user.active ? "Disable" : "Enable"}</button>
+            <button onClick={() => void toggle(user)} disabled={user.id === actorId} className="btn btn-secondary btn-sm">{user.active ? "Disable" : "Enable"}</button>
           </div></td>
         </tr>)}
         {!staffRows.length && <tr><td colSpan={4} className="px-4 py-6 text-center text-sm text-[var(--muted-foreground)]">{staffTable.loading ? "Loading staff users…" : "No staff users yet."}</td></tr>}</tbody>
@@ -146,7 +146,7 @@ export function AdminUsersPage({ actorId, token, onCustomersChanged }: { actorId
           {(Object.keys(roleLabels) as AdminRole[]).map((role) => <option key={role} value={role}>{roleLabels[role]}</option>)}
         </select></label>
         {error && <p role="alert" className="text-sm text-red-400">{error}</p>}
-        <div className="flex gap-2"><button type="submit" disabled={saving} className="rounded-lg bg-[var(--gold-mid)] px-4 py-2 font-semibold text-[var(--background)] disabled:opacity-60">{saving ? "Saving…" : "Save user"}</button><button type="button" onClick={() => setEditing(null)} className="rounded-lg bg-[var(--secondary)] px-4 py-2">Cancel</button></div>
+        <div className="flex gap-2"><button type="submit" disabled={saving} className="btn btn-primary">{saving ? "Saving…" : "Save user"}</button><button type="button" onClick={() => setEditing(null)} className="btn btn-secondary">Cancel</button></div>
       </form>
     </AdminModal>}
   </div>;

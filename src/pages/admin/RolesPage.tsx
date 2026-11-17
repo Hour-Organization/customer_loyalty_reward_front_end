@@ -130,7 +130,7 @@ export function AdminRolesPage({ actorId, token }: { actorId: string; token: str
           <h1 className="font-display text-3xl font-semibold">Role permissions</h1>
           <p className="mt-2 max-w-2xl text-sm text-[var(--muted-foreground)]">Create staff roles and choose the admin sections they can access. Saved changes apply to active sessions immediately.</p>
         </div>
-        <button type="button" onClick={openCreate} className="rounded-lg bg-[var(--gold-mid)] px-4 py-2 text-sm font-semibold text-[var(--background)]">+ Create role</button>
+        <button type="button" onClick={openCreate} className="btn btn-primary">+ Create role</button>
       </header>
       {loadError && <p role="alert" className="rounded-lg border border-red-400/40 p-3 text-sm text-red-400">Couldn't load roles: {loadError}</p>}
 
@@ -173,8 +173,8 @@ export function AdminRolesPage({ actorId, token }: { actorId: string; token: str
             <p className="mt-1 text-sm text-[var(--muted-foreground)]">{readOnly ? "Super Admin permissions are always enabled." : `${enabledCount} of ${editablePages.length} available sections enabled.`}</p>
           </div>
           {!readOnly && <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={() => updatePermissions([...editablePages, "profile"])} className="rounded-lg border border-[var(--border)] px-3 py-2 text-xs font-medium hover:bg-[var(--secondary)]">Select all</button>
-            <button type="button" onClick={() => updatePermissions(["profile"])} className="rounded-lg border border-[var(--border)] px-3 py-2 text-xs font-medium hover:bg-[var(--secondary)]">Clear all</button>
+            <button type="button" onClick={() => updatePermissions([...editablePages, "profile"])} className="btn btn-secondary btn-sm">Select all</button>
+            <button type="button" onClick={() => updatePermissions(["profile"])} className="btn btn-secondary btn-sm">Clear all</button>
           </div>}
         </div>
 
@@ -229,8 +229,8 @@ export function AdminRolesPage({ actorId, token }: { actorId: string; token: str
         <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[var(--border)] bg-[var(--secondary)]/35 px-5 py-4 sm:px-6">
           <p className="text-xs text-[var(--muted-foreground)]">{readOnly ? "Super Admin access cannot be changed." : hasChanges ? enabledCount === 0 ? "Select at least one section before saving." : "You have unsaved permission changes." : "All permission changes are saved."}</p>
           {!readOnly && <div className="flex gap-2">
-            <button type="button" onClick={() => setDraft((current) => ({ ...current, [role]: undefined }))} disabled={!hasChanges} className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-40">Discard</button>
-            <button type="button" onClick={() => void save()} disabled={!hasChanges || enabledCount === 0 || saving} className="rounded-lg bg-[var(--gold-mid)] px-4 py-2 text-sm font-semibold text-[var(--background)] disabled:cursor-not-allowed disabled:opacity-40">Save permissions</button>
+            <button type="button" onClick={() => setDraft((current) => ({ ...current, [role]: undefined }))} disabled={!hasChanges} className="btn btn-secondary">Discard</button>
+            <button type="button" onClick={() => void save()} disabled={!hasChanges || enabledCount === 0 || saving} className="btn btn-primary">Save permissions</button>
           </div>}
         </div>
       </section>
@@ -247,8 +247,8 @@ export function AdminRolesPage({ actorId, token }: { actorId: string; token: str
           </label>
           {createError && <p role="alert" className="text-sm text-red-400">{createError}</p>}
           <div className="flex justify-end gap-2">
-            <button type="button" onClick={() => setCreating(false)} className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm">Cancel</button>
-            <button type="submit" disabled={saving} className="rounded-lg bg-[var(--gold-mid)] px-4 py-2 text-sm font-semibold text-[var(--background)] disabled:opacity-60">{saving ? "Creating…" : "Create role"}</button>
+            <button type="button" onClick={() => setCreating(false)} className="btn btn-secondary">Cancel</button>
+            <button type="submit" disabled={saving} className="btn btn-primary">{saving ? "Creating…" : "Create role"}</button>
           </div>
         </form>
       </AdminModal>}

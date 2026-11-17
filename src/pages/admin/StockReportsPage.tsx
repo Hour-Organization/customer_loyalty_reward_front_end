@@ -24,7 +24,7 @@ export function AdminStockReportsPage() {
       <div className="flex flex-wrap gap-1" role="tablist">
         {reports.map((r) => (
           <button key={r.id} type="button" role="tab" aria-selected={report === r.id} onClick={() => setReport(r.id)}
-            className={`rounded-full px-3 py-1.5 text-xs font-medium ${report === r.id ? "bg-[var(--gold-mid)] text-[var(--background)]" : "border border-[var(--border)] bg-[var(--card)] text-[var(--muted-foreground)]"}`}>
+            className={`chip ${report === r.id ? "chip-active" : ""}`}>
             {r.label}
           </button>
         ))}
@@ -147,7 +147,7 @@ function MovementReport({ usd }: { usd: (n: number) => string }) {
           <option value="all">All locations</option>
           {shop.stockLocations.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
         </select>
-        {[7, 30, 90].map((d) => <button key={d} type="button" onClick={() => { setFrom(daysAgo(d)); setTo(todayDate()); }} className="rounded-full border border-[var(--border)] px-2.5 py-1 text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)]">Last {d} days</button>)}
+        {[7, 30, 90].map((d) => <button key={d} type="button" onClick={() => { setFrom(daysAgo(d)); setTo(todayDate()); }} className="chip">Last {d} days</button>)}
       </div>
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
         <Panel title="By movement type" flush>
@@ -218,7 +218,7 @@ function Velocity() {
     <>
       <div className="flex gap-2">
         {[30, 60, 90].map((d) => (
-          <button key={d} type="button" onClick={() => setPeriod(d)} className={`rounded-full px-3 py-1 text-xs ${period === d ? "bg-[var(--gold-mid)] text-[var(--background)]" : "border border-[var(--border)] text-[var(--muted-foreground)]"}`}>{d} days</button>
+          <button key={d} type="button" onClick={() => setPeriod(d)} className={`chip ${period === d ? "chip-active" : ""}`}>{d} days</button>
         ))}
       </div>
       <Panel title="Rewards ranked by units issued" description="Issued = fulfilled (online and POS) minus returns. Fast = top quarter; slow = more than 180 days of cover." flush>

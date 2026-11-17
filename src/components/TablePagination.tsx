@@ -75,7 +75,7 @@ export function TablePagination({ page, pageSize, total, onPageChange, onPageSiz
           <select
             value={pageSize}
             onChange={(event) => onPageSizeChange(Number(event.target.value))}
-            className="rounded-lg border border-[var(--border)] bg-[var(--card)] px-2 py-1 text-xs text-[var(--foreground)]"
+            className="control-sm"
           >
             {pageSizeOptions.map((size) => (
               <option key={size} value={size}>{size}</option>

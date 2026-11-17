@@ -106,7 +106,7 @@ export function AdminPointsPage({
         <h1 className="font-display text-2xl font-semibold">Points Ledger</h1>
         <button
           onClick={openAdjust}
-          className="px-3 py-1.5 rounded-lg bg-[var(--gold-mid)] text-[var(--background)] text-xs font-semibold hover:bg-[var(--gold-light)] transition-colors"
+          className="btn btn-primary"
         >
           Manual Adjustment
         </button>
@@ -207,7 +207,7 @@ export function AdminPointsPage({
               <button
                 type="submit"
                 disabled={saving}
-                className="px-4 py-2 rounded-lg bg-[var(--gold-mid)] text-[var(--background)] text-sm font-semibold hover:bg-[var(--gold-light)] transition-colors disabled:opacity-60"
+                className="btn btn-primary"
               >
                 {saving ? "Applying…" : "Apply"}
               </button>
