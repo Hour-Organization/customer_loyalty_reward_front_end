@@ -662,7 +662,7 @@ export default function App() {
           }}
         />
       )}
-      {customerPage === "orders" && <OrdersPage />}
+      {customerPage === "orders" && <OrdersPage onNav={(page) => navigateCustomer(page as CustomerPage)} />}
       {customerPage === "rewards" && <RewardsPage />}
       {customerPage === "points" && <PointsPage />}
       {customerPage === "tier" && <TierPage />}

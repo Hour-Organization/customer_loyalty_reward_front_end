@@ -6,6 +6,18 @@ import { tierRule } from "../../data/tiers";
 import { useFeedback } from "../../components/FeedbackProvider";
 import { ProductCover } from "../../components/ProductImage";
 import { Icon } from "../../components/Icon";
+import { KhqrPaymentDialog } from "../../components/KhqrPaymentDialog";
+import { useModalState } from "../../components/useModalState";
+import type { Order, PaymentMethod } from "../../data/mockData";
+
+const paymentOptions: { method: PaymentMethod; label: string; hint: string }[] = [
+  { method: "CASH_ON_DELIVERY", label: "Cash on delivery", hint: "Pay when your order arrives." },
+  {
+    method: "KHQR",
+    label: "KHQR",
+    hint: "Scan a QR with any Cambodian banking app right after placing the order. Unpaid orders are cancelled when the QR expires.",
+  },
+];
 
 export function CartPage({
   onNav,
@@ -24,6 +36,8 @@ export function CartPage({
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState(guest ? "" : shop.currentUser.phone);
   const [error, setError] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("CASH_ON_DELIVERY");
+  const [payingOrder, setPayingOrder, payingClosing] = useModalState<Order | null>(null);
   const items = shop.cart
     .map((item) => ({
       ...item,
@@ -72,24 +86,40 @@ export function CartPage({
         .filter((c) => c.qty > 0),
     );
 
+  // Placing a KHQR order empties the cart, so the dialog has to show over the empty-cart view too.
+  const paymentDialog = payingOrder && (
+    <KhqrPaymentDialog
+      order={payingOrder}
+      closing={payingClosing}
+      onClose={(next) => {
+        setPayingOrder(null);
+        if (next === "orders") onNav("orders");
+      }}
+    />
+  );
+
   if (!items.length)
     return (
-      <div className="text-center py-24 space-y-4">
-        <Icon
-          name="cart"
-          className="mx-auto h-12 w-12 text-[var(--gold-mid)]"
-        />
-        <h1 className="font-display text-2xl">Your cart is empty</h1>
-        <button
-          onClick={() => onNav("products")}
-          className="rounded-lg bg-[var(--gold-mid)] text-[var(--background)] px-5 py-2 font-semibold"
-        >
-          Browse Products
-        </button>
-      </div>
+      <>
+        {paymentDialog}
+        <div className="text-center py-24 space-y-4">
+          <Icon
+            name="cart"
+            className="mx-auto h-12 w-12 text-[var(--gold-mid)]"
+          />
+          <h1 className="font-display text-2xl">Your cart is empty</h1>
+          <button
+            onClick={() => onNav("products")}
+            className="rounded-lg bg-[var(--gold-mid)] text-[var(--background)] px-5 py-2 font-semibold"
+          >
+            Browse Products
+          </button>
+        </div>
+      </>
     );
   return (
     <div className="w-full space-y-5">
+      {paymentDialog}
       <h1 className="font-display text-2xl font-semibold">Your Cart</h1>
       {items.map(({ product, productId, qty }) => (
         <div
@@ -168,11 +198,19 @@ export function CartPage({
               e.preventDefault();
               if (placing) return;
               setPlacing(true);
-              const result = await run((token) => apiCheckout(token, shop.cart, address.trim(), phone.trim()));
+              const placed: { order?: Order } = {};
+              const result = await run(async (token) => {
+                placed.order = await apiCheckout(token, shop.cart, address.trim(), phone.trim(), paymentMethod);
+              });
               setPlacing(false);
               if (result) {
                 setError(result);
                 notify(result, "error");
+              } else if (placed.order?.payment?.method === "KHQR") {
+                shop.setCart([]);
+                setCheckingOut(false);
+                setError("");
+                setPayingOrder(placed.order);
               } else {
                 shop.setCart([]);
                 notify(
@@ -200,9 +238,26 @@ export function CartPage({
               placeholder="Cambodian phone number"
               className="w-full rounded-lg border border-[var(--border)] bg-[var(--secondary)] px-3 py-2"
             />
-            <p className="text-xs text-[var(--muted-foreground)]">
-              Cash on delivery · Pay when your order arrives
-            </p>
+            <fieldset className="space-y-2">
+              <legend className="mb-2 text-sm font-semibold">Payment</legend>
+              <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Payment method">
+                {paymentOptions.map((option) => (
+                  <button
+                    key={option.method}
+                    type="button"
+                    role="radio"
+                    aria-checked={paymentMethod === option.method}
+                    onClick={() => setPaymentMethod(option.method)}
+                    className={`chip ${paymentMethod === option.method ? "chip-active" : ""}`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+              <p className="text-xs text-[var(--muted-foreground)]">
+                {paymentOptions.find((option) => option.method === paymentMethod)!.hint}
+              </p>
+            </fieldset>
             {error && (
               <p role="alert" className="text-sm text-red-400">
                 {error}
@@ -214,7 +269,7 @@ export function CartPage({
                 disabled={placing}
                 className="flex-1 rounded-lg bg-[var(--gold-mid)] text-[var(--background)] py-2 font-semibold disabled:opacity-60"
               >
-                {placing ? "Placing order…" : "Place Order"}
+                {placing ? "Placing order…" : paymentMethod === "KHQR" ? "Place Order & Pay" : "Place Order"}
               </button>
               <button
                 type="button"

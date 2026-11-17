@@ -65,6 +65,24 @@ export interface Order {
   createdAt: string;
   deliveryAddress?: string;
   deliveryPhone?: string;
+  /** Missing on demo orders, which are cash on delivery. */
+  payment?: OrderPayment;
+}
+
+export type PaymentMethod = "CASH_ON_DELIVERY" | "KHQR";
+
+/** FAILED, EXPIRED and REFUND_DUE only happen to KHQR payments. */
+export type PaymentStatus = "PENDING" | "PAID" | "CANCELLED" | "FAILED" | "EXPIRED" | "REFUND_DUE";
+
+export interface OrderPayment {
+  method: PaymentMethod;
+  status: PaymentStatus;
+  /** KHQR only: what the customer's bank charges, the QR string to scan while PENDING, and its time limit. */
+  currency?: string;
+  amount?: number;
+  qr?: string | null;
+  expiresAt?: string | null;
+  paidAt?: string | null;
 }
 
 export interface LoyaltyTransaction {

@@ -1,5 +1,8 @@
 import { useShop } from "../../data/shop";
-import type { OrderStatus } from "../../data/mockData";
+import type { Order, OrderStatus } from "../../data/mockData";
+import { PaymentBadge, awaitingKhqr } from "../../components/PaymentBadge";
+import { KhqrPaymentDialog } from "../../components/KhqrPaymentDialog";
+import { useModalState } from "../../components/useModalState";
 
 const statusColors: Record<OrderStatus, string> = {
   PENDING: "text-yellow-400 bg-yellow-400/10",
@@ -10,13 +13,24 @@ const statusColors: Record<OrderStatus, string> = {
   CANCELLED: "text-red-400 bg-red-400/10",
 };
 
-export function OrdersPage() {
+export function OrdersPage({ onNav }: { onNav: (page: string) => void }) {
   const { orders, currentUser, money } = useShop();
   const myOrders = orders.filter((o) => o.customerId === currentUser.id);
+  const [payingOrder, setPayingOrder, payingClosing] = useModalState<Order | null>(null);
 
   return (
     <div className="flex flex-col gap-5">
       <h1 className="font-display text-2xl font-semibold">My Orders</h1>
+      {payingOrder && (
+        <KhqrPaymentDialog
+          order={payingOrder}
+          closing={payingClosing}
+          onClose={(next) => {
+            setPayingOrder(null);
+            if (next === "cart") onNav("cart");
+          }}
+        />
+      )}
 
       {myOrders.length === 0 ? (
         <div className="text-center py-16 text-[var(--muted-foreground)]">
@@ -44,6 +58,7 @@ export function OrdersPage() {
                   >
                     {order.status}
                   </span>
+                  <PaymentBadge payment={order.payment} />
                   {order.pointsEarned > 0 && (
                     <span className="text-xs text-[var(--gold-mid)] font-semibold">
                       +{order.pointsEarned} pts earned
@@ -75,9 +90,20 @@ export function OrdersPage() {
                 <span className="text-sm text-[var(--muted-foreground)]">
                   Order Total
                 </span>
-                <span className="font-semibold text-lg">
-                  {money(order.total)}
-                </span>
+                <div className="flex items-center gap-3">
+                  {awaitingKhqr(order) && (
+                    <button
+                      type="button"
+                      onClick={() => setPayingOrder(order)}
+                      className="btn btn-primary btn-sm"
+                    >
+                      Pay now
+                    </button>
+                  )}
+                  <span className="font-semibold text-lg">
+                    {money(order.total)}
+                  </span>
+                </div>
               </div>
               {order.deliveryAddress && (
                 <p className="mt-2 text-xs text-[var(--muted-foreground)]">

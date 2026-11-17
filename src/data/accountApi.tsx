@@ -63,6 +63,11 @@ export function AccountApiProvider({
   return <AccountApiContext.Provider value={value}>{children}</AccountApiContext.Provider>;
 }
 
+/** The signed-in customer's token (null for guests) and the reload of their records, for reads such as polling. */
+export function useAccountApi() {
+  return useContext(AccountApiContext);
+}
+
 /**
  * Runs an API change for the signed-in customer, then reloads their records. Returns the error message,
  * or null on success, matching the store's mutation convention.

@@ -2,7 +2,8 @@ import { useState } from "react"
 import { useShop } from "../../data/shop"
 import { apiUpdateOrderStatus } from "../../data/api"
 import { useFeedback } from "../../components/FeedbackProvider"
-import type { OrderStatus } from "../../data/mockData"
+import type { Order, OrderStatus } from "../../data/mockData"
+import { PaymentBadge, awaitingKhqr } from "../../components/PaymentBadge"
 import { AdminModal } from "../../components/AdminModal"
 import { useModalState } from "../../components/useModalState"
 
@@ -31,6 +32,10 @@ const nextStatuses: Record<OrderStatus, OrderStatus[]> = {
   CANCELLED: [],
 }
 
+/** The statuses staff can move an order to. An unpaid KHQR order can only be cancelled: the payment confirms it. */
+const allowedNext = (order: Order): OrderStatus[] =>
+  awaitingKhqr(order) ? nextStatuses[order.status].filter((status) => status !== "CONFIRMED") : nextStatuses[order.status]
+
 export function AdminOrdersPage({ token, onChanged }: { token: string; onChanged: () => Promise<void> }) {
   const { orders } = useShop()
   const { notify } = useFeedback()
@@ -39,9 +44,9 @@ export function AdminOrdersPage({ token, onChanged }: { token: string; onChanged
   const [nextStatus, setNextStatus] = useState<OrderStatus>("PENDING")
   const editingOrder = orders.find((order) => order.id === editingId)
 
-  const openStatusEditor = (id: string, status: OrderStatus) => {
-    setEditingId(id)
-    setNextStatus(nextStatuses[status][0] ?? status)
+  const openStatusEditor = (order: Order) => {
+    setEditingId(order.id)
+    setNextStatus(allowedNext(order)[0] ?? order.status)
   }
 
   const filtered = orders.filter((o) => filter === "All" || o.status === filter)
@@ -97,9 +102,10 @@ export function AdminOrdersPage({ token, onChanged }: { token: string; onChanged
                 >
                   {o.status}
                 </span>
-                {nextStatuses[o.status].length > 0 && (
+                <PaymentBadge payment={o.payment} />
+                {allowedNext(o).length > 0 && (
                   <button
-                    onClick={() => openStatusEditor(o.id, o.status)}
+                    onClick={() => openStatusEditor(o)}
                     className="btn btn-secondary btn-sm"
                   >
                     Change status
@@ -157,6 +163,16 @@ export function AdminOrdersPage({ token, onChanged }: { token: string; onChanged
             <p className="text-sm text-[var(--muted-foreground)]">
               Current status: {editingOrder.status}
             </p>
+            {awaitingKhqr(editingOrder) && (
+              <p className="text-sm text-[var(--muted-foreground)]">
+                Waiting for the customer's KHQR payment. The order confirms itself once it is paid.
+              </p>
+            )}
+            {editingOrder.payment?.method === "KHQR" && editingOrder.payment.status === "PAID" && (
+              <p className="text-sm text-orange-400">
+                Already paid by KHQR: cancelling marks the payment for a refund.
+              </p>
+            )}
             <label className="block text-sm">
               New status
               <select
@@ -166,7 +182,7 @@ export function AdminOrdersPage({ token, onChanged }: { token: string; onChanged
                 }
                 className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--secondary)] px-3 py-2"
               >
-                {nextStatuses[editingOrder.status].map((status) => (
+                {allowedNext(editingOrder).map((status) => (
                   <option key={status}>{status}</option>
                 ))}
               </select>

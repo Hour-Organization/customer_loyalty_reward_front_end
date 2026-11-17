@@ -1,6 +1,6 @@
 import type { LoginRole } from "../components/LoginPage";
 import type { Campaign, CartItem, LogEntry, Referral, TierChange } from "./shop";
-import type { Badge, Customer, LoyaltyTransaction, Order, OrderStatus, Product, ProductCategory, Reward } from "./mockData";
+import type { Badge, Customer, LoyaltyTransaction, Order, OrderPayment, OrderStatus, PaymentMethod, PaymentStatus, Product, ProductCategory, Reward } from "./mockData";
 import type { Redemption, RestockRequest, StockItem, StockLocation, StockMovement, StockMovementType, Stocktake, Supplier, Tracking } from "./stock";
 import type { TierTable } from "./tiers";
 
@@ -1251,6 +1251,16 @@ type ApiOrder = {
   delivery_address: string | null;
   delivery_phone: string | null;
   items: { product_id: number; name: string | null; quantity: number; unit_price: number; base_points: number; bonus_multiplier: number }[];
+  /** Cash on delivery has only `method` and `status`. */
+  payment: {
+    method: PaymentMethod;
+    status: PaymentStatus;
+    currency?: string;
+    amount?: number;
+    qr?: string | null;
+    expires_at?: string | null;
+    paid_at?: string | null;
+  } | null;
 };
 
 /** Orders are shown by their reference, "ORD-000012"; the API addresses them by number. */
@@ -1274,15 +1284,59 @@ const toOrder = (o: ApiOrder): Order => ({
   createdAt: (o.ordered_at ?? "").slice(0, 10),
   deliveryAddress: o.delivery_address ?? undefined,
   deliveryPhone: o.delivery_phone ?? undefined,
+  payment: o.payment ? toOrderPayment(o.payment) : undefined,
 });
 
-/** Places an order for the signed-in customer. Prices and points come from the server. */
-export async function apiCheckout(token: string, cart: CartItem[], address: string, phone: string) {
-  await request("/checkout", {
+const toOrderPayment = (p: NonNullable<ApiOrder["payment"]>): OrderPayment => ({
+  method: p.method,
+  status: p.status,
+  currency: p.currency,
+  amount: p.amount,
+  qr: p.qr,
+  expiresAt: p.expires_at,
+  paidAt: p.paid_at,
+});
+
+/**
+ * Places an order for the signed-in customer and returns it. Prices and points come from the server; a KHQR
+ * order comes back with the QR to show and its time limit.
+ */
+export async function apiCheckout(
+  token: string,
+  cart: CartItem[],
+  address: string,
+  phone: string,
+  paymentMethod: PaymentMethod = "CASH_ON_DELIVERY",
+): Promise<Order> {
+  const { data } = await request<{ data: ApiOrder }>("/checkout", {
     method: "POST",
     token,
-    body: { items: cart.map((item) => ({ product_id: Number(item.productId), quantity: item.qty })), address, phone },
+    body: {
+      items: cart.map((item) => ({ product_id: Number(item.productId), quantity: item.qty })),
+      address,
+      phone,
+      payment_method: paymentMethod,
+    },
   });
+  return toOrder(data);
+}
+
+/**
+ * The customer's order with its KHQR payment brought up to date: the server asks the provider, then confirms
+ * the order if it was paid or cancels it if the QR ran out.
+ */
+export async function apiPaymentStatus(token: string, orderId: string): Promise<Order> {
+  const { data } = await request<{ data: ApiOrder }>(`/orders/${orderApiId(orderId)}/payment`, { token });
+  return toOrder(data);
+}
+
+/** Development only: pays the order's KHQR as a banking app would. The API answers 404 unless its fake provider is on. */
+export async function apiSimulatePayment(token: string, orderId: string): Promise<Order> {
+  const { data } = await request<{ data: ApiOrder }>(`/orders/${orderApiId(orderId)}/payment/simulate`, {
+    method: "POST",
+    token,
+  });
+  return toOrder(data);
 }
 
 /** Loads every order, newest first, for staff. */

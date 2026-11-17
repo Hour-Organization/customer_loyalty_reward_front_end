@@ -389,7 +389,9 @@ button:disabled {
   font-weight: 700;
   font-size: 1.25rem;
 }
-.add-to-cart-dialog {
+/* Customer dialogs share one look. */
+.add-to-cart-dialog,
+.payment-dialog {
   position: fixed;
   width: min(100% - 2rem, 28rem);
   max-height: calc(100dvh - 2rem);
@@ -403,7 +405,8 @@ button:disabled {
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
   animation: dialog-enter 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
-.add-to-cart-dialog::backdrop {
+.add-to-cart-dialog::backdrop,
+.payment-dialog::backdrop {
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(5px);
 }
