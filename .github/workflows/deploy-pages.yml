@@ -42,6 +42,9 @@ jobs:
         run: pnpm build
         env:
           FIGMA_PUBLIC_URL: /customer_loyalty_reward
+          # Hosted API root, e.g. https://your-api.onrender.com/api. Set it under
+          # Settings → Secrets and variables → Actions → Variables. Unset, the site runs on demo data.
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
 
       - name: Support direct page links
         run: cp dist/index.html dist/404.html

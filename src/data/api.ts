@@ -4,9 +4,9 @@ import type { Badge, Customer, LoyaltyTransaction, Order, OrderPayment, OrderSta
 import type { Redemption, RestockRequest, StockItem, StockLocation, StockMovement, StockMovementType, Stocktake, Supplier, Tracking } from "./stock";
 import type { TierTable } from "./tiers";
 
-/** Laravel API root. Set `VITE_API_URL` to point at another server. */
+/** Laravel API root. Set `VITE_API_URL` to point at another server (an empty value counts as unset). */
 const apiUrl = (
-  import.meta.env.VITE_API_URL ?? "http://localhost/api"
+  import.meta.env.VITE_API_URL || "http://localhost/api"
 ).replace(/\/+$/, "");
 
 export type ApiStaffRole = {
