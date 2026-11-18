@@ -24,6 +24,12 @@ const emptyRegistration: RegisterFields = {
   referralCode: "",
 };
 
+/** Demo accounts from the backend seed, prefilled so each portal signs in with one click. */
+const demoSignIn: Record<LoginRole, { email: string; password: string }> = {
+  customer: { email: "customer@example.com", password: "password" },
+  admin: { email: "test@example.com", password: "password" },
+};
+
 /** Per-portal form styling: a soft, rounded storefront look for customers and a compact console look for staff. */
 const formStyles: Record<LoginRole, { label: string; input: string; toggle: string; submit: string; placeholder: string }> = {
   customer: {
@@ -48,8 +54,8 @@ const formStyles: Record<LoginRole, { label: string; input: string; toggle: stri
 
 export function LoginPage({ role = "customer", onLogin, onRegister, onBrowse }: Props) {
   const { notify } = useFeedback();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(demoSignIn[role].email);
+  const [password, setPassword] = useState(demoSignIn[role].password);
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
