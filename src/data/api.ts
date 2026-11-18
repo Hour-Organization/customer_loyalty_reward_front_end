@@ -67,7 +67,7 @@ async function request<T>(
     });
   } catch {
     throw new ApiError(
-      "Can't reach the KhmerShop server. Check that the API is running.",
+      "Can't reach the LoyalCart server. Check that the API is running.",
       0,
     );
   }
@@ -86,7 +86,7 @@ async function request<T>(
 export async function apiLogin(role: LoginRole, email: string, password: string) {
   const { token } = await request<{ token: string }>(`${prefix(role)}/login`, {
     method: "POST",
-    body: { email, password, device_name: "KhmerShop web" },
+    body: { email, password, device_name: "LoyalCart web" },
   });
   return token;
 }
@@ -113,7 +113,7 @@ export async function apiRegister(fields: RegisterFields) {
       phone: fields.phone,
       province: fields.province,
       referral_code: fields.referralCode,
-      device_name: "KhmerShop web",
+      device_name: "LoyalCart web",
     },
   });
   return { token, customer };

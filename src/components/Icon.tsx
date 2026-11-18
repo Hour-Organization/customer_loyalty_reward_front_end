@@ -1,6 +1,19 @@
 import type { ReactNode } from "react";
 
 const shapes: Record<string, ReactNode> = {
+  /** The LoyalCart brand mark: a cart carrying a heart. */
+  logo: (
+    <>
+      <path d="M2 4h2.5l2.2 11.5h11.6L21 7H5.1" />
+      <circle cx="9" cy="19.5" r="1.3" />
+      <circle cx="16.5" cy="19.5" r="1.3" />
+      <path
+        fill="currentColor"
+        stroke="none"
+        d="M13 14c-2.1-1.3-3.2-2.5-3.2-3.7a1.6 1.6 0 0 1 3.2-.45 1.6 1.6 0 0 1 3.2.45c0 1.2-1.1 2.4-3.2 3.7Z"
+      />
+    </>
+  ),
   shop: (
     <>
       <path d="M3 10h18l-1.5-6h-15L3 10Z" />

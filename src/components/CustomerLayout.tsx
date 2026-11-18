@@ -62,12 +62,12 @@ export function CustomerLayout({
         <div className="page-container h-14 flex items-center justify-between gap-2 sm:gap-4">
           <button
             onClick={() => onNav("home")}
-            aria-label="KhmerShop home"
+            aria-label="LoyalCart home"
             className="flex min-w-0 items-center gap-2"
           >
-            <Icon name="shop" className="h-6 w-6 shrink-0 text-[var(--gold-mid)]" />
+            <Icon name="logo" className="h-6 w-6 shrink-0 text-[var(--gold-mid)]" />
             <span className="hidden min-[400px]:inline truncate font-display text-lg font-semibold text-[var(--gold-mid)] leading-none">
-              KhmerShop
+              LoyalCart
             </span>
           </button>
 
@@ -156,7 +156,7 @@ export function CustomerLayout({
       </main>
 
       <footer className="border-t border-[var(--border)] py-6 text-center text-xs text-[var(--muted-foreground)]">
-        © 2026 KhmerShop · ហាងខ្មែរ · Phnom Penh, Cambodia
+        © 2026 LoyalCart · Phnom Penh, Cambodia
       </footer>
     </div>
   );

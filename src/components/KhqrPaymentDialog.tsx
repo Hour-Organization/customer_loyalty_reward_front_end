@@ -164,7 +164,7 @@ export function KhqrPaymentDialog({ order, onClose, closing = false }: Props) {
           <div className="mt-5 rounded-xl border border-[var(--border)] bg-[var(--secondary)]">
             <div className="flex items-end justify-between gap-4 px-5 pt-4 pb-3">
               <div>
-                <p className="text-sm font-semibold">KhmerShop</p>
+                <p className="text-sm font-semibold">LoyalCart</p>
                 <p className="text-xs text-[var(--muted-foreground)]">KHQR payment</p>
               </div>
               <div className="text-right">

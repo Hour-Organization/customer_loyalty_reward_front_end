@@ -54,7 +54,7 @@ export function AdminDashboardPage() {
       <div>
         <h1 className="font-display text-2xl font-semibold">Dashboard</h1>
         <p className="text-sm text-[var(--muted-foreground)] mt-0.5">
-          KhmerShop Platform Overview
+          LoyalCart Platform Overview
         </p>
       </div>
 

@@ -173,10 +173,10 @@ export function AdminLayout({ page, onNav, onLogout, allowedPages, userName, use
     <>
       <div className="flex h-14 shrink-0 items-center gap-3 px-4">
         <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[var(--gold-mid)]/15 text-[var(--gold-mid)] ring-1 ring-inset ring-[var(--gold-mid)]/25">
-          <Icon name="shop" className="h-[18px] w-[18px]" />
+          <Icon name="logo" className="h-[18px] w-[18px]" />
         </span>
         <div className="min-w-0 flex-1 leading-tight">
-          <div className="font-display text-[15px] font-semibold text-[var(--foreground)]">KhmerShop</div>
+          <div className="font-display text-[15px] font-semibold text-[var(--foreground)]">LoyalCart</div>
           <div className="text-xs text-[var(--muted-foreground)]">Admin console</div>
         </div>
         <button
@@ -363,7 +363,7 @@ export function AdminLayout({ page, onNav, onLogout, allowedPages, userName, use
                 <span className="hidden text-[var(--muted-foreground)] sm:inline">{activeGroup} / </span>
               )}
               <span className="font-display font-semibold text-[var(--foreground)] sm:text-base">
-                {currentItem?.label ?? "KhmerShop Admin"}
+                {currentItem?.label ?? "LoyalCart Admin"}
               </span>
             </div>
 

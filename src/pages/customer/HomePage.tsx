@@ -59,7 +59,7 @@ export function HomePage({
             Discover Cambodian products and rewards
           </h2>
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-[var(--muted-foreground)]">
-            Browse KhmerShop without an account. Sign in when you’re ready to
+            Browse LoyalCart without an account. Sign in when you’re ready to
             place an order and earn loyalty points.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">

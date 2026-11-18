@@ -42,7 +42,7 @@ const formStyles: Record<LoginRole, { label: string; input: string; toggle: stri
     toggle: "right-2.5 text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)] hover:text-[var(--foreground)]",
     submit:
       "flex w-full items-center justify-center gap-2 rounded-md bg-[var(--gold-mid)] py-2.5 text-sm font-semibold text-[var(--background)] transition-opacity hover:opacity-90 disabled:opacity-60",
-    placeholder: "name@khmershop.com",
+    placeholder: "name@loyalcart.com",
   },
 };
 
@@ -83,7 +83,7 @@ export function LoginPage({ role = "customer", onLogin, onRegister, onBrowse }: 
       notify(result, "error");
     } else {
       setError("");
-      notify("Welcome to KhmerShop! Your account is ready.", "success");
+      notify("Welcome to LoyalCart! Your account is ready.", "success");
     }
   };
 
@@ -101,7 +101,7 @@ export function LoginPage({ role = "customer", onLogin, onRegister, onBrowse }: 
       notify(
         role === "admin"
           ? "Welcome to the admin dashboard."
-          : "Welcome back to KhmerShop.",
+          : "Welcome back to LoyalCart.",
         "success",
       );
     }
@@ -268,8 +268,8 @@ export function LoginPage({ role = "customer", onLogin, onRegister, onBrowse }: 
         />
         <div className="animate-page-enter relative w-full max-w-sm">
           <div className="mb-6 flex items-center justify-center gap-2.5">
-            <Icon name="shop" className="h-6 w-6 text-[var(--gold-mid)]" />
-            <span className="font-display text-lg font-semibold">KhmerShop</span>
+            <Icon name="logo" className="h-6 w-6 text-[var(--gold-mid)]" />
+            <span className="font-display text-lg font-semibold">LoyalCart</span>
             <span className="rounded border border-[var(--hairline)] bg-[var(--tint)] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
               Admin
             </span>
@@ -305,10 +305,10 @@ export function LoginPage({ role = "customer", onLogin, onRegister, onBrowse }: 
         <aside className="relative flex flex-col justify-between overflow-hidden bg-[image:var(--hero-gradient)] p-5 sm:p-7 lg:p-10">
           <div className="pointer-events-none absolute -right-20 -top-16 h-72 w-72 rounded-full bg-[var(--gold-mid)]/10 blur-3xl" />
           <div className="relative flex items-center gap-3">
-            <Icon name="shop" className="h-8 w-8 text-[var(--gold-mid)]" />
+            <Icon name="logo" className="h-8 w-8 text-[var(--gold-mid)]" />
             <div>
               <div className="font-display text-2xl font-semibold text-[var(--gold-mid)]">
-                KhmerShop
+                LoyalCart
               </div>
               <p className="text-xs text-[var(--muted-foreground)]">
                 Loyalty & rewards
@@ -340,14 +340,14 @@ export function LoginPage({ role = "customer", onLogin, onRegister, onBrowse }: 
               </h2>
               <p className="mt-1 text-sm text-[var(--muted-foreground)]">
                 {registering
-                  ? "Join KhmerShop to earn points on every order."
-                  : "Sign in with your KhmerShop account."}
+                  ? "Join LoyalCart to earn points on every order."
+                  : "Sign in with your LoyalCart account."}
               </p>
             </div>
             {registering && canRegister ? registerForm : form}
             {canRegister && (
               <p className="mt-4 text-center text-sm text-[var(--muted-foreground)]">
-                {registering ? "Already have an account?" : "New to KhmerShop?"}{" "}
+                {registering ? "Already have an account?" : "New to LoyalCart?"}{" "}
                 <button
                   type="button"
                   onClick={() => switchMode(!registering)}
